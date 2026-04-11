@@ -20,9 +20,11 @@ class MyTransactionController extends Controller
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
-                        <a class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded shadow-lg" href="' . route('dashboard.my-transaction.show', $item->id) . '">
-                            Show
-                        </a>
+                        <div class="flex items-center space-x-2">
+                            <a class="inline-flex items-center px-4 py-2 bg-lux-black border border-transparent text-[10px] font-bold text-white uppercase tracking-widest hover:bg-lux-gold transition-all duration-300" href="' . route('dashboard.my-transaction.show', $item->id) . '">
+                                Show
+                            </a>
+                        </div>
                     ';
                 })
                 ->editColumn('total_price', function ($item) {

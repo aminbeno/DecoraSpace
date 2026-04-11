@@ -1,90 +1,247 @@
 <!-- START: HEADER -->
-<header class="{{ Route::current()->getName() == 'index' ? 'absolute' : '' }} w-full z-50 px-4">
-    <div class="container mx-auto py-5">
-        <div class="flex flex-stretch items-center">
-            <div class="w-56 items-center flex">
-                <a href="{{ route('index') }}">
+@php($isHomeRoute = Route::currentRouteNamed('index'))
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 {{ $isHomeRoute ? 'bg-transparent' : 'bg-white/90 backdrop-blur-md border-b border-lux-grey-medium/10' }}"
+    id="main-header"
+    data-is-home="{{ $isHomeRoute ? 'true' : 'false' }}">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="flex items-center justify-between py-4 md:py-6">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <a href="{{ route('index') }}" class="block group">
                     <img src="{{ asset('frontend/images/content/logo.png') }}"
-                        alt="Luxspace | Fulfill your house with beautiful furniture" />
+                        alt="Luxspace" class="h-8 md:h-10 w-auto transition-transform duration-300 group-hover:scale-105" />
                 </a>
             </div>
-            <div class="w-full"></div>
-            <div class="w-auto">
-                <ul class="fixed bg-white inset-0 flex flex-col invisible items-center justify-center opacity-0 md:visible md:flex-row md:bg-transparent md:relative md:opacity-100 md:flex md:items-center"
-                    id="menu">
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="#"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Showcase</a>
-                    </li>
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="{{ route('catalog') }}"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Catalog</a>
-                    </li>
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="#"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Delivery</a>
-                    </li>
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="#"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Rewards</a>
-                    </li>
-                    @auth
-                    {{-- Konten yang hanya dapat diakses oleh pengguna yang terautentikasi --}}
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="{{ route('dashboard.index') }}"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Dashboard</a>
-                    </li>
-                    @endauth
-                    @guest
-                    {{-- Konten yang hanya dapat diakses oleh pengguna yang belum terautentikasi --}}
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="{{ route('login') }}"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Login</a>
-                    </li>
-                    <li class="mx-3 py-6 md:py-0">
-                        <a href="{{ route('register') }}"
-                            class="text-black  {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} hover:underline">Register</a>
-                    </li>
-                    @endguest
-                </ul>
-            </div>
-            <div class="w-auto">
-                <ul class="items-center flex">
-                    <li class="ml-6 block md:hidden">
-                        <button id="menu-toggler"
-                            class="relative flex z-50 items-center justify-center w-8 h-8 text-black {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }} focus:outline-none">
-                            <svg class="fill-current" width="18" height="17" viewBox="0 0 18 17">
-                                <path
-                                    d="M15.9773 0.461304H1.04219C0.466585 0.461304 0 0.790267 0 1.19609C0 1.60192 0.466668 1.93088 1.04219 1.93088H15.9773C16.5529 1.93088 17.0195 1.60192 17.0195 1.19609C17.0195 0.790208 16.5529 0.461304 15.9773 0.461304Z" />
-                                <path
-                                    d="M15.9773 7.68802H1.04219C0.466585 7.68802 0 8.01698 0 8.42281C0 8.82864 0.466668 9.1576 1.04219 9.1576H15.9773C16.5529 9.1576 17.0195 8.82864 17.0195 8.42281C17.0195 8.01692 16.5529 7.68802 15.9773 7.68802Z" />
-                                <path
-                                    d="M15.9773 14.9147H1.04219C0.466585 14.9147 0 15.2437 0 15.6495C0 16.0553 0.466668 16.3843 1.04219 16.3843H15.9773C16.5529 16.3843 17.0195 16.0553 17.0195 15.6495C17.0195 15.2436 16.5529 14.9147 15.9773 14.9147Z" />
-                            </svg>
-                        </button>
-                    </li>
-                    <li class="ml-6">
-                        <a id="header-cart"
-                            class="flex items-center justify-center w-8 h-8 text-black {{ Route::current()->getName() == 'index' ? 'md:text-white' : 'md:text-black' }}"
-                            href="{{ route('cart') }}">
-                            <svg class="fill-current" width="26" height="24" viewBox="0 0 26 24">
-                                <path
-                                    d="M10.8754 18.7312C9.61762 18.7312 8.59436 19.7115 8.59436 20.9164C8.59436 22.1214 9.61762 23.1017 10.8754 23.1017C12.1331 23.1017 13.1564 22.1214 13.1564 20.9164C13.1563 19.7115 12.1331 18.7312 10.8754 18.7312ZM10.8754 21.8814C10.3199 21.8814 9.86796 21.4485 9.86796 20.9163C9.86796 20.3842 10.3199 19.9512 10.8754 19.9512C11.4308 19.9512 11.8828 20.3842 11.8828 20.9163C11.8828 21.4486 11.4308 21.8814 10.8754 21.8814Z" />
-                                <path
-                                    d="M18.8764 18.7312C17.6186 18.7312 16.5953 19.7115 16.5953 20.9164C16.5953 22.1214 17.6186 23.1017 18.8764 23.1017C20.1342 23.1017 21.1575 22.1214 21.1575 20.9164C21.1574 19.7115 20.1341 18.7312 18.8764 18.7312ZM18.8764 21.8814C18.3209 21.8814 17.869 21.4485 17.869 20.9163C17.869 20.3842 18.3209 19.9512 18.8764 19.9512C19.4319 19.9512 19.8838 20.3842 19.8838 20.9163C19.8838 21.4486 19.4319 21.8814 18.8764 21.8814Z" />
-                                <path
-                                    d="M19.438 7.2262H10.3122C9.96051 7.2262 9.67542 7.49932 9.67542 7.83626C9.67542 8.1732 9.96056 8.44632 10.3122 8.44632H19.438C19.7897 8.44632 20.0748 8.1732 20.0748 7.83626C20.0748 7.49927 19.7897 7.2262 19.438 7.2262Z" />
-                                <path
-                                    d="M18.9414 10.3942H10.8089C10.4572 10.3942 10.1721 10.6673 10.1721 11.0042C10.1721 11.3412 10.4572 11.6143 10.8089 11.6143H18.9413C19.293 11.6143 19.5781 11.3412 19.5781 11.0042C19.5781 10.6673 19.293 10.3942 18.9414 10.3942Z" />
-                                <path
-                                    d="M25.6499 4.508C25.407 4.22245 25.0472 4.05871 24.6626 4.05871H4.82655L4.42595 2.19571C4.34232 1.80709 4.06563 1.48078 3.68565 1.32272L0.890528 0.160438C0.567841 0.0261566 0.192825 0.168008 0.0528584 0.477043C-0.0872597 0.786176 0.0608116 1.14549 0.383347 1.27957L3.17852 2.4419L6.2598 16.7708C6.38117 17.3351 6.90578 17.7446 7.50723 17.7446H22.7635C23.1152 17.7446 23.4003 17.4715 23.4003 17.1346C23.4003 16.7976 23.1152 16.5245 22.7635 16.5245H7.50728L7.13247 14.7815H22.8814C23.4828 14.7815 24.0075 14.3719 24.1288 13.8076L25.9101 5.52488C25.9876 5.16421 25.8928 4.79349 25.6499 4.508ZM22.8814 13.5615H6.87012L5.08895 5.27879L24.6626 5.27884L22.8814 13.5615Z" />
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex items-center space-x-10 rtl:space-x-reverse">
+                <a href="{{ route('index') }}#browse-the-room"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Vitrine') }}
+                </a>
+                <a href="{{ route('catalog') }}"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Catalogue') }}
+                </a>
+                <a href="#"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Livraison') }}
+                </a>
+                <a href="{{ route('about') }}"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('À propos') }}
+                </a>
+                <a href="{{ route('contact') }}"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Contact') }}
+                </a>
+                @auth
+                <a href="{{ route('dashboard.index') }}"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Tableau de bord') }}
+                </a>
+                @endauth
+                @guest
+                <a href="{{ route('login') }}"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Connexion') }}
+                </a>
+                <a href="{{ route('register') }}"
+                    class="text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    {{ __('Inscription') }}
+                </a>
+                @endguest
+
+                <!-- Language Selector (Desktop) -->
+                <div class="relative group ml-4">
+                    <button class="flex items-center space-x-1 text-sm font-medium tracking-widest uppercase transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                        <span>{{ strtoupper(app()->getLocale()) }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-lux-grey-medium/10">
+                        <a href="{{ route('locale.set', 'fr') }}" class="block px-4 py-2 text-sm text-lux-black hover:bg-lux-grey-light hover:text-lux-gold {{ app()->getLocale() == 'fr' ? 'font-bold text-lux-gold' : '' }}">Français</a>
+                        <a href="{{ route('locale.set', 'ar') }}" class="block px-4 py-2 text-sm text-lux-black hover:bg-lux-grey-light hover:text-lux-gold {{ app()->getLocale() == 'ar' ? 'font-bold text-lux-gold' : '' }}">العربية (AR)</a>
+                        <a href="{{ route('locale.set', 'en') }}" class="block px-4 py-2 text-sm text-lux-black hover:bg-lux-grey-light hover:text-lux-gold {{ app()->getLocale() == 'en' ? 'font-bold text-lux-gold' : '' }}">English</a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Right Icons -->
+            <div class="flex items-center space-x-3 md:space-x-6">
+                <!-- Search Icon (Desktop only) -->
+                <button class="hidden md:block transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+
+                <!-- Cart -->
+                <a href="{{ route('cart') }}"
+                    class="relative p-2 transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }} flex items-center justify-center"
+                    aria-label="Shopping Cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-7 md:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </a>
+
+                <!-- Mobile Menu Toggler -->
+                <button id="mobile-menu-toggler"
+                    class="md:hidden p-2 transition-colors duration-200 {{ $isHomeRoute ? 'text-white hover:text-lux-gold' : 'text-lux-black hover:text-lux-gold' }} flex items-center justify-center"
+                    aria-label="Toggle menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
 </header>
 
+<!-- Mobile Menu (Sidebar Drawer) -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-lux-black/50 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+    <div id="mobile-sidebar" class="fixed inset-y-0 right-0 rtl:right-auto rtl:left-0 w-[300px] bg-lux-black z-[100] translate-x-full rtl:-translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col p-10 overflow-y-auto">
+        <div class="flex justify-between items-center mb-16">
+            <span class="text-lux-gold font-serif text-2xl tracking-widest uppercase">{{ __('Menu') }}</span>
+            <button id="mobile-menu-close" class="text-white p-2 hover:text-lux-gold transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="flex flex-col space-y-8">
+            <a href="{{ route('index') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Accueil') }}</a>
+            <a href="{{ route('catalog') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Catalogue') }}</a>
+            <a href="#" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Livraison') }}</a>
+            <a href="{{ route('about') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('À propos') }}</a>
+            <a href="{{ route('contact') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Contact') }}</a>
+
+            @auth
+            <a href="{{ route('dashboard.index') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Tableau de bord') }}</a>
+            @endauth
+
+            @guest
+            <a href="{{ route('login') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Connexion') }}</a>
+            <a href="{{ route('register') }}" class="text-xl font-serif text-white tracking-widest uppercase hover:text-lux-gold transition-colors border-b border-white/5 pb-4">{{ __('Inscription') }}</a>
+            @endguest
+
+            <!-- Language Switcher (Mobile) -->
+            <div class="pt-8 border-t border-white/10 flex flex-wrap gap-4">
+                <a href="{{ route('locale.set', 'fr') }}" class="text-sm font-medium uppercase {{ app()->getLocale() == 'fr' ? 'text-lux-gold' : 'text-white/60' }}">FR</a>
+                <a href="{{ route('locale.set', 'ar') }}" class="text-sm font-medium uppercase {{ app()->getLocale() == 'ar' ? 'text-lux-gold' : 'text-white/60' }}">AR</a>
+                <a href="{{ route('locale.set', 'en') }}" class="text-sm font-medium uppercase {{ app()->getLocale() == 'en' ? 'text-lux-gold' : 'text-white/60' }}">EN</a>
+            </div>
+        </nav>
+
+    <div class="mt-auto pt-16 text-center">
+        <p class="text-white/30 text-xs uppercase tracking-widest">© {{ date('Y') }} LuxSpace</p>
+    </div>
+</div>
+
+<script>
+        (function() {
+            document.addEventListener('DOMContentLoaded', function() {
+                const header = document.getElementById('main-header');
+                const menuToggler = document.getElementById('mobile-menu-toggler');
+                const menuClose = document.getElementById('mobile-menu-close');
+                const menuOverlay = document.getElementById('mobile-menu-overlay');
+                const menu = document.getElementById('mobile-sidebar');
+
+                if (!header) return;
+
+                const isHomePage = header.getAttribute('data-is-home') === 'true';
+
+                // Header scroll effect
+                if (isHomePage) {
+                    const navLinks = header.querySelectorAll('nav a');
+                    const icons = header.querySelectorAll('button, a.relative');
+                    const headerContent = header.querySelector('.container > div');
+
+                    window.addEventListener('scroll', () => {
+                        if (window.scrollY > 50) {
+                            header.classList.remove('bg-transparent');
+                            header.classList.add('bg-white/95', 'backdrop-blur-md', 'shadow-sm');
+                            if (headerContent) {
+                                headerContent.classList.replace('py-4', 'py-2');
+                                headerContent.classList.replace('md:py-6', 'md:py-4');
+                            }
+
+                            navLinks.forEach(link => {
+                                link.classList.remove('text-white');
+                                link.classList.add('text-lux-black');
+                            });
+                            icons.forEach(el => {
+                                el.classList.remove('text-white');
+                                el.classList.add('text-lux-black');
+                            });
+                        } else {
+                            header.classList.add('bg-transparent');
+                            header.classList.remove('bg-white/95', 'backdrop-blur-md', 'shadow-sm');
+                            if (headerContent) {
+                                headerContent.classList.replace('py-2', 'py-4');
+                                headerContent.classList.replace('md:py-4', 'md:py-6');
+                            }
+
+                            navLinks.forEach(link => {
+                                link.classList.add('text-white');
+                                link.classList.remove('text-lux-black');
+                            });
+                            icons.forEach(el => {
+                                el.classList.add('text-white');
+                                el.classList.remove('text-lux-black');
+                            });
+                        }
+                    });
+                }
+
+                function openMenu() {
+                    if (!menu || !menuOverlay) return;
+                    const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+                    if (isRtl) {
+                        menu.classList.remove('-translate-x-full');
+                    } else {
+                        menu.classList.remove('translate-x-full');
+                    }
+                    menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    menuOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeMenu() {
+                    if (!menu || !menuOverlay) return;
+                    const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+                    if (isRtl) {
+                        menu.classList.add('-translate-x-full');
+                    } else {
+                        menu.classList.add('translate-x-full');
+                    }
+                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                    menuOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                    document.body.style.overflow = 'auto';
+                }
+
+                if (menuToggler && menu && menuClose && menuOverlay) {
+                    menuToggler.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openMenu();
+                    });
+
+                    menuClose.addEventListener('click', closeMenu);
+                    menuOverlay.addEventListener('click', closeMenu);
+
+                    const menuLinks = menu.querySelectorAll('a');
+                    menuLinks.forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            if (link.hash && link.pathname === window.location.pathname) {
+                                closeMenu();
+                            }
+                        });
+                    });
+                }
+            });
+        })();
+    </script>
 <!-- END: HEADER -->

@@ -9,8 +9,9 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,92 +20,84 @@
     <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9F9F7;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
         /*Form fields*/
         .dataTables_wrapper select,
         .dataTables_wrapper .dataTables_filter input {
-            color: #4a5568;
-            /*text-gray-700*/
-            padding-left: 1rem;
-            /*pl-4*/
-            padding-right: 1rem;
-            /*pl-4*/
-            padding-top: .5rem;
-            /*pl-2*/
-            padding-bottom: .5rem;
-            /*pl-2*/
+            color: #121212;
+            padding: 0.5rem 1rem;
             line-height: 1.25;
-            /*leading-tight*/
-            border-width: 2px;
-            /*border-2*/
-            border-radius: .25rem;
-            border-color: #edf2f7;
-            /*border-gray-200*/
-            background-color: #edf2f7;
-            /*bg-gray-200*/
+            border: 1px solid #E5E5E5;
+            border-radius: 0;
+            background-color: #fff;
+        }
+        .dataTables_wrapper select:focus,
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #C5A059;
+            outline: none;
+            ring: 0;
         }
 
         /*Row Hover*/
         table.dataTable.hover tbody tr:hover,
         table.dataTable.display tbody tr:hover {
-            background-color: #ebf4ff;
-            /*bg-indigo-100*/
+            background-color: #FAF7F2;
         }
 
         /*Pagination Buttons*/
         .dataTables_wrapper .dataTables_paginate .paginate_button {
-            font-weight: 700;
-            /*font-bold*/
-            border-radius: .25rem;
-            /*rounded*/
-            border: 1px solid transparent;
-            /*border border-transparent*/
+            font-weight: 600;
+            border-radius: 0;
+            border: 1px solid #E5E5E5;
+            margin-left: 2px;
+            padding: 0.5rem 1rem !important;
         }
 
         /*Pagination Buttons - Current selected */
         .dataTables_wrapper .dataTables_paginate .paginate_button.current {
             color: #fff !important;
-            /*text-white*/
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
-            /*shadow*/
-            font-weight: 700;
-            /*font-bold*/
-            border-radius: .25rem;
-            /*rounded*/
-            background: #667eea !important;
-            /*bg-indigo-500*/
-            border: 1px solid transparent;
-            /*border border-transparent*/
+            background: #121212 !important;
+            border: 1px solid #121212 !important;
         }
 
-        /*Pagination Buttons - Hover */
         .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
             color: #fff !important;
-            /*text-white*/
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
-            /*shadow*/
-            font-weight: 700;
-            /*font-bold*/
-            border-radius: .25rem;
-            /*rounded*/
-            background: #667eea !important;
-            /*bg-indigo-500*/
-            border: 1px solid transparent;
-            /*border border-transparent*/
+            background: #C5A059 !important;
+            border: 1px solid #C5A059 !important;
         }
 
         /*Add padding to bottom border */
         table.dataTable.no-footer {
-            border-bottom: 1px solid #e2e8f0;
-            /*border-b-1 border-gray-300*/
-            margin-top: 0.75em;
-            margin-bottom: 0.75em;
+            border-bottom: 1px solid #E5E5E5;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        table.dataTable thead th {
+            border-bottom: 2px solid #121212 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 1rem !important;
+        }
+
+        table.dataTable tbody td {
+            padding: 1rem !important;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #E5E5E5;
         }
 
         /*Change colour of responsive icon*/
         table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before,
         table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
-            background-color: #667eea !important;
-            /*bg-indigo-500*/
+            background-color: #C5A059 !important;
         }
     </style>
 

@@ -12,8 +12,31 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                serif: ['Playfair Display', ...defaultTheme.fontFamily.serif],
             },
+            colors: {
+                lux: {
+                    'black': '#121212',
+                    'dark': '#1A1A1A',
+                    'grey': {
+                        'light': '#F9F9F7',
+                        'medium': '#E5E5E5',
+                        'dark': '#4A4A4A',
+                    },
+                    'gold': '#C5A059',
+                    'cream': '#FAF7F2',
+                    'offwhite': '#FDFDFD',
+                }
+            },
+            spacing: {
+                '18': '4.5rem',
+                '22': '5.5rem',
+            },
+            borderRadius: {
+                'xl': '1rem',
+                '2xl': '1.5rem',
+            }
         },
     },
 

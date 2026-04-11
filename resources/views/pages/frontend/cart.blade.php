@@ -1,231 +1,150 @@
 @extends('layouts.frontend')
 
 @section('content')
-<!-- START: BREADCRUMB -->
-<section class="bg-gray-100 py-8 px-4">
-    <div class="container mx-auto">
-        <ul class="breadcrumb">
-            <li>
-                <a href="index.html">Home</a>
-            </li>
-            <li>
-                <a href="#" aria-label="current-page">Shopping Cart</a>
-            </li>
-        </ul>
-    </div>
-</section>
-<!-- END: BREADCRUMB -->
+<div class="bg-lux-grey-light pt-32 pb-24">
+    <div class="container mx-auto px-4 md:px-6">
+        <!-- Breadcrumbs -->
+        <nav class="flex text-[10px] md:text-xs uppercase tracking-widest text-lux-grey-dark mb-8 md:mb-12">
+            <a href="{{ route('index') }}" class="hover:text-lux-gold transition-colors">Accueil</a>
+            <span class="mx-2">/</span>
+            <span class="text-lux-black">Panier</span>
+        </nav>
 
-<!-- START: COMPLETE YOUR ROOM -->
-<section class="md:py-16">
-    <div class="container mx-auto px-4">
-        <div class="flex -mx-4 flex-wrap">
-            <div class="w-full px-4 mb-4 md:w-8/12 md:mb-0" id="shopping-cart">
-                <div class="flex flex-start mb-4 mt-8 pb-3 border-b border-gray-200 md:border-b-0">
-                    <h3 class="text-2xl">Shopping Cart</h3>
-                </div>
+        <h1 class="text-3xl md:text-5xl font-serif text-lux-black mb-8 md:mb-12">Votre Panier</h1>
 
-                <div class="border-b border-gray-200 mb-4 hidden md:block">
-                    <div class="flex flex-start items-center pb-2 -mx-4">
-                        <div class="px-4 flex-none">
-                            <div class="" style="width: 90px">
-                                <h6>Photo</h6>
-                            </div>
-                        </div>
-                        <div class="px-4 w-5/12">
-                            <div class="">
-                                <h6>Product</h6>
-                            </div>
-                        </div>
-                        <div class="px-4 w-5/12">
-                            <div class="">
-                                <h6>Price</h6>
-                            </div>
-                        </div>
-                        <div class="px-4 w-2/12">
-                            <div class="text-center">
-                                <h6>Action</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        @if (session('error'))
+        <div class="mb-8 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+            {{ session('error') }}
+        </div>
+        @endif
 
-                {{-- @forelse merupakan directive di dalam framework Laravel yang digunakan untuk melakukan loop pada
-                data. Directive ini memiliki fungsi yang sama dengan @foreach, namun memiliki fitur tambahan untuk
-                menangani kondisi ketika data yang dilakukan loop-nya kosong. Dengan menggunakan @forelse, kita dapat
-                menampilkan pesan atau tindakan alternatif ketika data yang dilakukan loop-nya kosong, sehingga dapat
-                menghindari error atau pesan yang tidak diinginkan. --}}
+        <div class="flex flex-col lg:flex-row gap-16">
+            <!-- Cart Items -->
+            <div class="w-full lg:w-2/3 space-y-8">
                 @forelse ($carts as $cart)
-
-                <div class="flex flex-start flex-wrap items-center mb-4 -mx-4" data-row="1">
-                    <div class="px-4 flex-none">
-                        <div class="" style="width: 90px; height: 90px">
-
-                            {{-- $cart adalah variabel yang berisi data keranjang belanja.
-                            $cart->product digunakan untuk mengakses data produk yang terkait dengan keranjang belanja.
-                            $cart->product->productGallery() digunakan untuk memanggil relasi antara model produk dengan
-                            model galeri produk (productGallery).
-                            $cart->product->productGallery()->exists() adalah fungsi yang digunakan untuk memeriksa
-                            apakah terdapat data galeri produk yang terkait dengan produk yang ditampilkan pada
-                            keranjang belanja. Jika galeri produk ada, maka fungsi tersebut akan mengembalikan nilai
-                            true, jika tidak maka akan mengembalikan nilai false.
-                            Jika galeri produk ada, maka Storage::url($cart->product->productGallery->first()->url) akan
-                            mengembalikan URL gambar produk yang terdapat pada galeri produk. Fungsi Storage::url()
-                            digunakan untuk mengambil URL yang terkait dengan sebuah file yang tersimpan pada sistem
-                            penyimpanan seperti lokal storage, cloud storage, atau S3 storage. Dalam hal ini, kode
-                            tersebut digunakan untuk mengambil URL gambar produk yang tersimpan pada sistem penyimpanan
-                            aplikasi web.
-                            Jika galeri produk tidak ada, maka
-                            'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' akan
-                            digunakan sebagai gambar pengganti. Gambar ini merupakan gambar standar kosong yang terdiri
-                            dari 1 piksel berwarna putih dan umumnya digunakan sebagai fallback ketika gambar asli tidak
-                            tersedia atau tidak ditemukan. --}}
-                            <img src="{{ $cart->product->productGallery()->exists() ? Storage::url($cart->product->productGallery->first()->url) : 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' }}"
-                                alt="Photo Product {{ $cart->product->name }}"
-                                class="object-cover rounded-xl w-full h-full" />
+                <div class="flex flex-col sm:flex-row items-center bg-white p-6 shadow-sm group">
+                    <div class="w-32 h-32 flex-shrink-0 bg-lux-grey-light overflow-hidden mb-4 sm:mb-0">
+                        <img src="{{ $cart->product->productGallery()->exists() ? Storage::url($cart->product->productGallery->first()->url) : asset('frontend/images/content/placeholder-product.png') }}"
+                            data-fallback="{{ asset('frontend/images/content/placeholder-product.png') }}"
+                            onerror="this.onerror=null; this.src=this.dataset.fallback;"
+                            alt="{{ $cart->product->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    </div>
+                    <div class="sm:ml-8 flex-grow text-center sm:text-left">
+                        <h3 class="text-xl font-serif text-lux-black mb-1">{{ $cart->product->name }}</h3>
+                        <p class="text-sm text-lux-grey-dark uppercase tracking-widest mb-2">Premium Collection</p>
+                        <div class="flex items-center justify-center sm:justify-start space-x-3">
+                            <p class="text-lg font-medium text-lux-black">{{ number_format($cart->product->currentPrice()) }} DH</p>
+                            @if($cart->product->isOnPromotion())
+                            <p class="text-sm text-lux-grey-dark line-through opacity-50">{{ number_format($cart->product->price) }} DH</p>
+                            @endif
                         </div>
                     </div>
-                    <div class="px-4 w-auto flex-1 md:w-5/12">
-                        <div class="">
-                            <h6 class="font-semibold text-lg md:text-xl leading-8">
-                                {{ $cart->product->name }}
-                            </h6>
-                            <span class="text-sm md:text-lg">Office Room</span>
-                            <h6 class="font-semibold text-base md:text-lg block md:hidden">
-                                IDR {{ number_format($cart->product->price) }}
-                            </h6>
-                        </div>
-                    </div>
-                    <div class="px-4 w-auto flex-none md:flex-1 md:w-5/12 hidden md:block">
-                        <div class="">
-                            <h6 class="font-semibold text-lg">IDR {{ number_format($cart->product->price) }}</h6>
-                        </div>
-                    </div>
-                    <div class="px-4 w-2/12">
-                        <div class="text-center">
-                            <form action="{{ route('cart-delete', $cart->id) }}" method="post"
-                                enctype="multipart/form-data">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 border-none focus:outline-none px-3 py-1">
-                                    X
-                                </button>
-                            </form>
-                        </div>
+                    <div class="mt-4 sm:mt-0 sm:ml-auto">
+                        <form action="{{ route('cart-delete', $cart->id) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-lux-grey-medium hover:text-red-600 transition-colors p-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
                 @empty
-                <p id="cart-empty" class="text-center py-8">
-                    Ooops... Cart is empty
-                    <a href="{{ route('index') }}" class="underline">Shop Now</a>
-                </p>
-                @endforelse
-                <div>
-                    <h6 class="font-semibold text-xl">Total Price : IDR <span>{{ number_format($total_price) }}</span>
-                    </h6>
+                <div class="text-center py-20 bg-white border border-dashed border-lux-grey-medium rounded-2xl">
+                    <p class="text-lux-grey-dark italic mb-6">Your cart is currently empty.</p>
+                    <a href="{{ route('catalog') }}" class="inline-block bg-lux-black text-white px-10 py-4 text-xs font-bold uppercase tracking-widest hover:bg-lux-gold transition-all duration-300">
+                        Start Shopping
+                    </a>
                 </div>
+                @endforelse
 
+                @if($carts->isNotEmpty())
+                <div class="flex justify-between items-center pt-8 border-t border-lux-grey-medium/30">
+                    <span class="text-lux-grey-dark uppercase tracking-widest text-sm">Total</span>
+                    <span class="text-2xl font-serif text-lux-black">{{ number_format($total_price) }} DH</span>
+                </div>
+                @endif
             </div>
-            <div class="w-full md:px-4 md:w-4/12" id="shipping-detail">
-                <div class="bg-gray-100 px-4 py-6 md:p-8 md:rounded-3xl">
-                    <form action="{{ route('checkout') }}" method="POST" enctype="multipart/form-data">
+
+            <!-- Détails de livraison -->
+            <div class="w-full lg:w-1/3" id="details-livraison">
+                <div class="bg-white p-8 shadow-lg lg:sticky lg:top-32">
+                    <h2 class="text-2xl font-serif text-lux-black mb-8">Détails de livraison</h2>
+
+                    <form action="{{ route('checkout') }}" method="POST" class="space-y-6">
                         @csrf
-                        <div class="flex flex-start mb-6">
-                            <h3 class="text-2xl">Shipping Details</h3>
+                        <div class="space-y-2">
+                            <label for="complete-name" class="text-[10px] uppercase tracking-[0.2em] text-lux-grey-dark font-bold">Nom complet</label>
+                            <input data-input type="text" name="name" id="complete-name" value="{{ old('name', auth()->user()->name) }}" required
+                                class="w-full border-b border-lux-grey-medium py-2 focus:outline-none focus:border-lux-gold transition-colors text-sm" />
                         </div>
 
-                        <div class="flex flex-col mb-4">
-                            <label for="name" class="text-sm mb-2">Complete Name</label>
-                            <input data-input type="text" name="name" id="name"
-                                class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
-                                placeholder="Input your name" />
+                        <div class="space-y-2">
+                            <label for="email" class="text-[10px] uppercase tracking-[0.2em] text-lux-grey-dark font-bold">Adresse E-mail</label>
+                            <input data-input type="email" name="email" id="email" value="{{ old('email', auth()->user()->email) }}" required
+                                class="w-full border-b border-lux-grey-medium py-2 focus:outline-none focus:border-lux-gold transition-colors text-sm" />
                         </div>
 
-                        <div class="flex flex-col mb-4">
-                            <label for="email" class="text-sm mb-2">Email Address</label>
-                            <input data-input type="email" name="email" id="email"
-                                class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
-                                placeholder="Input your email address" />
+                        <div class="space-y-2">
+                            <label for="address" class="text-[10px] uppercase tracking-[0.2em] text-lux-grey-dark font-bold">Adresse de livraison</label>
+                            <input data-input type="text" name="address" id="address" value="{{ old('address') }}" required
+                                class="w-full border-b border-lux-grey-medium py-2 focus:outline-none focus:border-lux-gold transition-colors text-sm" />
                         </div>
 
-                        <div class="flex flex-col mb-4">
-                            <label for="address" class="text-sm mb-2">Address</label>
-                            <input data-input type="text" name="address" id="address"
-                                class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
-                                placeholder="Input your address" />
+                        <div class="space-y-2">
+                            <label for="phone-number" class="text-[10px] uppercase tracking-[0.2em] text-lux-grey-dark font-bold">Numéro de téléphone</label>
+                            <input data-input type="tel" name="phone" id="phone-number" value="{{ old('phone') }}" required
+                                class="w-full border-b border-lux-grey-medium py-2 focus:outline-none focus:border-lux-gold transition-colors text-sm" />
                         </div>
 
-                        <div class="flex flex-col mb-4">
-                            <label for="phone" class="text-sm mb-2">Phone Number</label>
-                            <input data-input type="tel" name="phone" id="phone"
-                                class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
-                                placeholder="Input your phone number" />
-                        </div>
-
-                        <div class="flex flex-col mb-4">
-                            <label for="complete-name" class="text-sm mb-2">Choose Courier</label>
-                            <div class="flex -mx-2 flex-wrap">
-                                <div class="px-2 w-6/12 h-24 mb-4">
-                                    <button type="button" data-value="fedex" data-name="courier"
-                                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none">
-                                        <img src="{{ asset('/frontend/images/content/logo-fedex.svg') }}"
-                                            alt="Logo Fedex" class="object-contain max-h-full" />
-                                    </button>
-                                </div>
-                                <div class="px-2 w-6/12 h-24 mb-4">
-                                    <button type="button" data-value="dhl" data-name="courier"
-                                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none">
-                                        <img src="{{ asset('/frontend/images/content/logo-dhl.svg') }}" alt="Logo dhl"
-                                            class="object-contain max-h-full" />
-                                    </button>
-                                </div>
+                        <!-- Courier Selection -->
+                        <div class="space-y-4">
+                            <label class="text-[10px] uppercase tracking-[0.2em] text-lux-grey-dark font-bold">Choisir le transporteur</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button type="button" data-name="courier" data-value="fedex"
+                                    class="border border-lux-grey-medium p-4 hover:border-lux-gold transition-all focus:border-lux-gold focus:outline-none group">
+                                    <img src="{{ asset('/frontend/images/content/logo-fedex.svg') }}" alt="Fedex" class="h-4 md:h-6 mx-auto grayscale group-hover:grayscale-0 transition-all" />
+                                </button>
+                                <button type="button" data-name="courier" data-value="dhl"
+                                    class="border border-lux-grey-medium p-4 hover:border-lux-gold transition-all focus:border-lux-gold focus:outline-none group">
+                                    <img src="{{ asset('/frontend/images/content/logo-dhl.svg') }}" alt="DHL" class="h-4 md:h-6 mx-auto grayscale group-hover:grayscale-0 transition-all" />
+                                </button>
                             </div>
                         </div>
 
-                        <div class="flex flex-col mb-4">
-                            <label for="complete-name" class="text-sm mb-2">Choose Payment</label>
-                            <div class="flex -mx-2 flex-wrap">
-                                <div class="px-2 w-6/12 h-24 mb-4">
-                                    <button type="button" data-value="midtrans" data-name="payment"
-                                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none">
-                                        <img src="{{ asset('/frontend/images/content/logo-midtrans.png') }}"
-                                            alt="Logo midtrans" class="object-contain max-h-full" />
-                                    </button>
+                        <!-- Payment Selection -->
+                        <div class="space-y-4">
+                            <label class="text-[10px] uppercase tracking-[0.2em] text-lux-grey-dark font-bold">Mode de paiement</label>
+                            <div class="p-6 border-2 border-lux-gold bg-lux-gold/5 flex flex-col items-center text-center space-y-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-lux-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-bold text-lux-black uppercase tracking-widest">Paiement à la livraison (COD)</p>
+                                    <p class="text-[10px] text-lux-grey-dark mt-1">Vous payez en espèces dès que vous recevez votre commande.</p>
                                 </div>
-                                <div class="px-2 w-6/12 h-24 mb-4">
-                                    <button type="button" data-value="mastercard" data-name="payment"
-                                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none">
-                                        <img src="{{ asset('/frontend/images/content/logo-mastercard.svg') }}"
-                                            alt="Logo mastercard" />
-                                    </button>
-                                </div>
-                                <div class="px-2 w-6/12 h-24 mb-4">
-                                    <button type="button" data-value="bitcoin" data-name="payment"
-                                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none">
-                                        <img src="{{ asset('/frontend/images/content/logo-bitcoin.svg') }}"
-                                            alt="Logo bitcoin" class="object-contain max-h-full" />
-                                    </button>
-                                </div>
-                                <div class="px-2 w-6/12 h-24 mb-4">
-                                    <button type="button" data-value="american-express" data-name="payment"
-                                        class="border border-gray-200 focus:border-red-200 flex items-center justify-center rounded-xl bg-white w-full h-full focus:outline-none">
-                                        <img src="{{ asset('/frontend/images/content/logo-american-express.svg') }}"
-                                            alt="Logo american-logo-american-express" />
-                                    </button>
-                                </div>
+                                <input type="hidden" name="payment" value="COD">
                             </div>
                         </div>
-                        <div class="text-center">
+
+                        <div class="pt-6">
                             <button type="submit"
-                                class="bg-pink-400 text-black hover:bg-black hover:text-pink-400 focus:outline-none w-full py-3 rounded-full text-lg focus:text-black transition-all duration-200 px-6">
-                                Checkout Now
+                                class="w-full bg-lux-black text-white py-5 text-xs font-bold uppercase tracking-widest hover:bg-lux-gold transition-all duration-300">
+                                Confirmer ma commande
                             </button>
                         </div>
                     </form>
+
+                    <div class="mt-8 pt-8 border-t border-lux-grey-medium/30">
+                        <p class="text-[10px] text-lux-grey-dark leading-relaxed">
+                            Your transaction is secured with industry-standard encryption.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-<!-- END: COMPLETE YOUR ROOM -->
+</div>
 @endsection

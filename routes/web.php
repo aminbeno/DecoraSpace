@@ -7,6 +7,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductGalleryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,11 +22,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/locale/{locale}', [LocaleController::class, 'setLocale'])->name('locale.set');
+
 Route::get('/', [FrontendController::class, 'index'])->name('index');
-
 Route::get('/catalog', [FrontendController::class, 'catalog'])->name('catalog');
-
 Route::get('/details/{slug}', [FrontendController::class, 'details'])->name('details');
+Route::get('/about', [FrontendController::class, 'about'])->name('about');
+Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 
 // Route yang hanya boleh di akses jika sudah login
 Route::middleware([
@@ -53,6 +57,7 @@ Route::middleware([
 
     // Route yang hanya boleh di akses jika role usernya adalah ADMIN
     Route::middleware(['admin'])->group(function () {
+        Route::resource('category', CategoryController::class);
         Route::resource('product', ProductController::class);
         Route::resource('product.gallery', ProductGalleryController::class)->shallow()->only([
             'index', 'create', 'store', 'destroy'

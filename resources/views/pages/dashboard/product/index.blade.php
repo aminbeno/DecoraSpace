@@ -16,6 +16,7 @@
                 columns:[
                     {data:'id', name:'id', width:'5%'},
                     {data:'name', name:'name'},
+                    {data:'category', name:'category'},
                     {data:'price', name:'price'},
                     {
                         data:'action',
@@ -36,15 +37,16 @@
                     class="bg-green-500 hover:bg-green-700 text-black font-bold py-2 px-4 rounded shadow-lg">+
                     Create</a>
             </div>
-            <div class="shadow overflow-hidden sm-rounded-md">
-                <div class="px-4 py-5 bg-white sm:p-6">
-                    <table id="crudTable">
+            <div class="shadow overflow-hidden sm:rounded-md">
+                <div class="px-4 py-5 bg-white sm:p-6 overflow-x-auto">
+                    <table id="crudTable" class="w-full">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nama</th>
-                                <th>Harga</th>
-                                <th>Aksi</th>
+                                <th>Nom</th>
+                                <th>Catégorie</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

@@ -1,118 +1,131 @@
 @extends('layouts.frontend')
 
 @section('content')
-<!-- START: BREADCRUMB -->
-<section class="bg-gray-100 py-8 px-4">
-    <div class="container mx-auto">
-        <ul class="breadcrumb">
-            <li>
-                <a href="index.html">Home</a>
-            </li>
-            <li>
-                <a href="#">Office Room</a>
-            </li>
-            <li>
-                <a href="#" aria-label="current-page">Details</a>
-            </li>
-        </ul>
-    </div>
-</section>
-<!-- END: BREADCRUMB -->
+<div class="bg-white pt-32 pb-24">
+    <div class="container mx-auto px-4 md:px-6">
+        <!-- Breadcrumbs -->
+        <nav class="flex text-[10px] md:text-xs uppercase tracking-widest text-lux-grey-dark mb-8 md:mb-12 overflow-x-auto whitespace-nowrap pb-2 md:pb-0">
+            <a href="{{ route('index') }}" class="hover:text-lux-gold transition-colors">Accueil</a>
+            <span class="mx-2">/</span>
+            <a href="{{ route('catalog') }}" class="hover:text-lux-gold transition-colors">Catalogue</a>
+            <span class="mx-2">/</span>
+            <span class="text-lux-black">{{ $product->name }}</span>
+        </nav>
 
-<!-- START: DETAILS -->
-<section class="container mx-auto">
-    <div class="flex flex-wrap my-4 md:my-12">
-        <div class="w-full md:hidden px-4">
-            <h2 class="text-5xl font-semibold">{{ $product->name }}</h2>
-            <span class="text-xl">IDR {{ number_format($product->price) }}</span>
-        </div>
-        <div class="flex-1">
-            <div class="slider">
-                <div class="thumbnail">
+        <div class="flex flex-col lg:flex-row gap-10 md:gap-16">
+            <!-- Product Images -->
+            <div class="w-full lg:w-3/5 space-y-4 md:space-y-6">
+                <div class="relative aspect-square bg-lux-grey-light overflow-hidden rounded-lg">
+                    <img id="main-preview" src="{{ $product->productGallery()->exists() ? Storage::url($product->productGallery->first()->url) : asset('frontend/images/content/placeholder-product.png') }}"
+                        data-fallback="{{ asset('frontend/images/content/placeholder-product.png') }}"
+                        onerror="this.onerror=null; this.src=this.dataset.fallback;"
+                        alt="{{ $product->name }}" class="w-full h-full object-cover transition-all duration-500" />
+                </div>
+                <div class="grid grid-cols-4 gap-2 md:gap-4">
                     @foreach ($product->productGallery as $item)
-                    <div class="px-2">
-
-                        {{-- Jika index tersebut adalah index pertama ($loop->first), maka kode akan mengembalikan
-                        string 'selected', Namun, jika index tersebut bukan merupakan index pertama, maka kode akan
-                        mengembalikan string kosong ('') --}}
-                        <div class="item {{ $loop->first ? 'selected': '' }}" data-img="{{ Storage::url($item->url) }}">
-                            <img src="{{ Storage::url($item->url) }}" alt="front"
-                                class="object-cover w-full h-full rounded-lg" />
-                        </div>
-                    </div>
+                    <button class="aspect-square bg-lux-grey-light overflow-hidden border-2 {{ $loop->first ? 'border-lux-gold' : 'border-transparent hover:border-lux-grey-medium' }} transition-all thumbnail-btn rounded-md"
+                        data-img="{{ Storage::url($item->url) }}">
+                        <img src="{{ Storage::url($item->url) }}" alt="{{ $product->name }}" class="w-full h-full object-cover" />
+                    </button>
                     @endforeach
                 </div>
-                <div class="preview">
-                    <div class="item rounded-lg h-full overflow-hidden">
+            </div>
 
-                        {{-- Jika produk memiliki relasi productGallery() yang terhubung dengan gambar produk, maka kode
-                        akan mengembalikan URL gambar produk yang disimpan di sistem penyimpanan, yaitu dengan memanggil
-                        method Storage::url() pada URL gambar. Namun, jika produk tidak memiliki relasi productGallery()
-                        atau tidak memiliki gambar produk, maka kode akan mengembalikan string base64
-                        yang merepresentasikan
-                        gambar kosong --}}
-                        <img src="{{ $product->productGallery()->exists() ? Storage::url($product->productGallery->first()->url) : 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' }}"
-                            alt="front" class="object-cover w-full h-full rounded-lg" />
+            <!-- Product Info -->
+            <div class="w-full lg:w-2/5 space-y-8 md:space-y-10">
+                <div class="space-y-4">
+                    @if($product->isOnPromotion())
+                    <span class="bg-lux-gold text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 inline-block mb-2">
+                        {{ $product->promo_label ?? 'Promotion' }}
+                    </span>
+                    @endif
+                    <span class="text-lux-gold uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold block">Premium Furniture</span>
+                    <h1 class="text-3xl md:text-5xl font-serif text-lux-black leading-tight">{{ $product->name }}</h1>
+                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                        <p class="text-2xl md:text-3xl font-light text-lux-black tracking-wider">
+                            {{ number_format($product->currentPrice()) }} DH
+                        </p>
+                        @if($product->isOnPromotion())
+                        <p class="text-lg md:text-xl font-light text-lux-grey-dark tracking-wider line-through opacity-50">
+                            {{ number_format($product->price) }} DH
+                        </p>
+                        @endif
+                    </div>
+                    @if($product->isOnPromotion() && $product->promo_end_at)
+                    <p class="text-[10px] md:text-xs text-red-500 font-bold uppercase tracking-widest bg-red-50 px-3 py-2 inline-block">
+                        Offre valable jusqu'au {{ \Carbon\Carbon::parse($product->promo_end_at)->format('d/m/Y H:i') }}
+                    </p>
+                    @endif
+                </div>
+
+                <div class="prose prose-sm text-lux-grey-dark leading-relaxed max-w-none">
+                    {!! $product->description !!}
+                </div>
+
+                <div class="pt-6 border-t border-lux-grey-medium/30">
+                    <form action="{{ route('cart-add', $product->id) }}" method="post" class="space-y-6">
+                        @csrf
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                            <div class="flex border border-lux-grey-medium h-14 justify-between sm:justify-start">
+                                <button type="button" class="px-6 hover:bg-lux-grey-light transition-colors">-</button>
+                                <input type="number" value="1" min="1" class="w-16 text-center border-none focus:ring-0 text-sm font-medium" />
+                                <button type="button" class="px-6 hover:bg-lux-grey-light transition-colors">+</button>
+                            </div>
+                            <button type="submit"
+                                class="flex-grow bg-lux-black text-white h-14 px-8 text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-lux-gold transition-all duration-300 flex items-center justify-center space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                <span>Ajouter au panier</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="space-y-4 pt-10 border-t border-lux-grey-medium/30">
+                    <div class="flex items-center space-x-4 text-xs uppercase tracking-widest text-lux-black">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-lux-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Free Premium Delivery</span>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs uppercase tracking-widest text-lux-black">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-lux-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>2 Years Warranty</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="flex-1 px-4 md:p-6">
-            <h2 class="text-5xl font-semibold">{{ $product->name }}</h2>
-            <p class="text-xl">IDR {{ number_format($product->price) }}</p>
-
-            <form action="{{ route('cart-add', $product->id) }}" method="post" enctype="multipart/form-data">
-                @csrf
-                <button type="submit"
-                    class="transition-all duration-200 bg-pink-400 text-black focus:bg-black focus:text-pink-400 rounded-full px-8 py-3 mt-4 inline-flex"><svg
-                        class="fill-current mr-3" width="26" height="24" viewBox="0 0 26 24">
-                        <path
-                            d="M10.8754 18.7312C9.61762 18.7312 8.59436 19.7115 8.59436 20.9164C8.59436 22.1214 9.61762 23.1017 10.8754 23.1017C12.1331 23.1017 13.1564 22.1214 13.1564 20.9164C13.1563 19.7115 12.1331 18.7312 10.8754 18.7312ZM10.8754 21.8814C10.3199 21.8814 9.86796 21.4485 9.86796 20.9163C9.86796 20.3842 10.3199 19.9512 10.8754 19.9512C11.4308 19.9512 11.8828 20.3842 11.8828 20.9163C11.8828 21.4486 11.4308 21.8814 10.8754 21.8814Z" />
-                        <path
-                            d="M18.8764 18.7312C17.6186 18.7312 16.5953 19.7115 16.5953 20.9164C16.5953 22.1214 17.6186 23.1017 18.8764 23.1017C20.1342 23.1017 21.1575 22.1214 21.1575 20.9164C21.1574 19.7115 20.1341 18.7312 18.8764 18.7312ZM18.8764 21.8814C18.3209 21.8814 17.869 21.4485 17.869 20.9163C17.869 20.3842 18.3209 19.9512 18.8764 19.9512C19.4319 19.9512 19.8838 20.3842 19.8838 20.9163C19.8838 21.4486 19.4319 21.8814 18.8764 21.8814Z" />
-                        <path
-                            d="M19.438 7.2262H10.3122C9.96051 7.2262 9.67542 7.49932 9.67542 7.83626C9.67542 8.1732 9.96056 8.44632 10.3122 8.44632H19.438C19.7897 8.44632 20.0748 8.1732 20.0748 7.83626C20.0748 7.49927 19.7897 7.2262 19.438 7.2262Z" />
-                        <path
-                            d="M18.9414 10.3942H10.8089C10.4572 10.3942 10.1721 10.6673 10.1721 11.0042C10.1721 11.3412 10.4572 11.6143 10.8089 11.6143H18.9413C19.293 11.6143 19.5781 11.3412 19.5781 11.0042C19.5781 10.6673 19.293 10.3942 18.9414 10.3942Z" />
-                        <path
-                            d="M25.6499 4.508C25.407 4.22245 25.0472 4.05871 24.6626 4.05871H4.82655L4.42595 2.19571C4.34232 1.80709 4.06563 1.48078 3.68565 1.32272L0.890528 0.160438C0.567841 0.0261566 0.192825 0.168008 0.0528584 0.477043C-0.0872597 0.786176 0.0608116 1.14549 0.383347 1.27957L3.17852 2.4419L6.2598 16.7708C6.38117 17.3351 6.90578 17.7446 7.50723 17.7446H22.7635C23.1152 17.7446 23.4003 17.4715 23.4003 17.1346C23.4003 16.7976 23.1152 16.5245 22.7635 16.5245H7.50728L7.13247 14.7815H22.8814C23.4828 14.7815 24.0075 14.3719 24.1288 13.8076L25.9101 5.52488C25.9876 5.16421 25.8928 4.79349 25.6499 4.508ZM22.8814 13.5615H6.87012L5.08895 5.27879L24.6626 5.27884L22.8814 13.5615Z" />
-                    </svg>
-                    Add to Cart
-                </button>
-            </form>
-            <hr class="my-8" />
-
-            <h6 class="text-xl font-semibold mb-4">About the product</h6>
-            <p class="text-xl leading-7 mb-6">
-                {!! $product->description !!}
-            </p>
-        </div>
     </div>
-</section>
-<!-- END: DETAILS -->
+</div>
 
 <!-- START: COMPLETE YOUR ROOM -->
-<section class="bg-gray-100 px-4 py-16">
-    <div class="container mx-auto">
-        <div class="flex flex-start mb-4">
-            <h3 class="text-2xl capitalize font-semibold">
-                Complete your room <br class="" />with what we designed
-            </h3>
+<section class="py-16 md:py-24 bg-lux-grey-light">
+    <div class="container mx-auto px-4 md:px-6">
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-2xl md:text-4xl font-serif text-lux-black mb-4">Complétez votre intérieur</h2>
+            <p class="text-sm md:text-base text-lux-grey-dark">Se marie parfaitement avec ces pièces sélectionnées.</p>
         </div>
-        <div class="flex overflow-x-auto mb-4 -mx-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             @foreach ($recommendations as $recommendation)
-            <div class="px-3 flex-none" style="width: 320px">
-                <div class="rounded-xl p-4 pb-8 relative bg-white">
-                    <div class="rounded-xl overflow-hidden card-shadow w-full h-36">
-                        <img src="{{ $recommendation->productGallery()->exists() ? Storage::url($recommendation->productGallery->first()->url) : 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' }}"
-                            alt="Recommendation Product {{ $recommendation->name }}"
-                            class="w-full h-full object-cover object-center" />
-                    </div>
-                    <h5 class="text-lg font-semibold mt-4">{{ $recommendation->name }}</h5>
-                    <span class="">IDR {{ number_format($recommendation->price) }}</span>
-                    <a href="{{ route('details', $recommendation->slug) }}" class="stretched-link">
-                        <!-- fake children -->
-                    </a>
+            <div class="group relative">
+                <div class="relative aspect-[3/4] overflow-hidden bg-white mb-6 rounded-lg">
+                    <img src="{{ $recommendation->productGallery()->exists() ? Storage::url($recommendation->productGallery->first()->url) : asset('frontend/images/content/placeholder-product.png') }}"
+                        data-fallback="{{ asset('frontend/images/content/placeholder-product.png') }}"
+                        onerror="this.onerror=null; this.src=this.dataset.fallback;"
+                        alt="{{ $recommendation->name }}"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <a href="{{ route('details', $recommendation->slug) }}" class="absolute inset-0"></a>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-base md:text-lg font-serif text-lux-black mb-2 group-hover:text-lux-gold transition-colors">
+                        <a href="{{ route('details', $recommendation->slug) }}">{{ $recommendation->name }}</a>
+                    </h3>
+                    <p class="text-lux-grey-dark font-medium tracking-widest text-xs md:text-sm">
+                        {{ number_format($recommendation->price) }} DH
+                    </p>
                 </div>
             </div>
             @endforeach
@@ -120,4 +133,26 @@
     </div>
 </section>
 <!-- END: COMPLETE YOUR ROOM -->
+
+<script>
+    document.querySelectorAll('.thumbnail-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const newImg = this.getAttribute('data-img');
+            const mainPreview = document.getElementById('main-preview');
+
+            // Fade effect
+            mainPreview.style.opacity = '0';
+            setTimeout(() => {
+                mainPreview.src = newImg;
+                mainPreview.style.opacity = '1';
+            }, 300);
+
+            // Active border
+            document.querySelectorAll('.thumbnail-btn').forEach(b => b.classList.remove('border-lux-gold'));
+            document.querySelectorAll('.thumbnail-btn').forEach(b => b.classList.add('border-transparent'));
+            this.classList.remove('border-transparent');
+            this.classList.add('border-lux-gold');
+        });
+    });
+</script>
 @endsection

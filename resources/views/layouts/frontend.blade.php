@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" lang="">
+<html class="no-js" lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if(app()->getLocale() == 'ar') dir="rtl" @else dir="ltr" @endif>
 
 <head>
     <meta charset="utf-8" />
@@ -12,25 +12,40 @@
     <meta property="og:url" content="" />
     <meta property="og:image" content="" />
 
-    <link rel="manifest" href="site.webmanifest" />
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}" />
     <link rel="apple-touch-icon" href="{{ asset('frontend/images/content/favicon.png') }}" />
     <!-- Place favicon.ico in the root directory -->
 
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <link rel="icon" href="{{ asset('frontend/images/content/favicon.png') }}" />
 
-    <meta name="theme-color" content="#000" />
+    <meta name="theme-color" content="#121212" />
     <link rel="icon" href="{{ asset('frontend/favicon.ico') }}">
 
-    <link href="{{ asset('frontend/css/app.minify.css') }}" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFDFD;
+            color: #121212;
+        }
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
 </head>
 
-<body>
+<body class="antialiased selection:bg-lux-gold selection:text-white">
     <!-- Add your site or application content here -->
 
     @include('components.frontend.navbar')
-    @yield('content')
+    <main>
+        @yield('content')
+    </main>
     @include('components.frontend.footer')
 
     <!-- START: LOAD SVG -->
@@ -55,7 +70,7 @@
       ga("send", "pageview");
     </script>
     <script src="https://www.google-analytics.com/analytics.js" async></script>
-    <script src="{{ asset('/frontend/js/app.js') }}"></script>
+    <script src="{{ asset('/frontend/js/app.js') }}" defer></script>
 </body>
 
 </html>

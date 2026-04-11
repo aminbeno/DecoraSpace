@@ -20,16 +20,21 @@ class TransactionController extends Controller
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
-                        <a class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-3 rounded shadow-lg" href="' . route('dashboard.transaction.show', $item->id) . '">
-                            Show
-                        </a>
-                        <a class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 ml-3 rounded shadow-lg" href="' . route('dashboard.transaction.edit', $item->id) . '">
-                            Edit
-                        </a>
+                        <div class="flex items-center space-x-2">
+                            <a class="inline-flex items-center px-4 py-2 bg-lux-black border border-transparent text-[10px] font-bold text-white uppercase tracking-widest hover:bg-lux-gold transition-all duration-300" href="' . route('dashboard.transaction.show', $item->id) . '">
+                                Show
+                            </a>
+                            <a class="inline-flex items-center px-4 py-2 border border-lux-grey-medium text-[10px] font-bold text-lux-black uppercase tracking-widest hover:border-lux-gold hover:text-lux-gold transition-all duration-300" href="' . route('dashboard.transaction.edit', $item->id) . '">
+                                Edit
+                            </a>
+                        </div>
                     ';
                 })
                 ->editColumn('total_price', function ($item) {
-                    return number_format($item->total_price);
+                    return number_format($item->total_price) . ' DH';
+                })
+                ->editColumn('payment_method', function ($item) {
+                    return $item->payment_method ?? $item->payment;
                 })
                 ->rawColumns(['action'])
                 ->make();
@@ -62,7 +67,7 @@ class TransactionController extends Controller
             $query = TransactionItem::with(['product'])->where('transaction_id', $transaction->id);
             return DataTables::of($query)
                 ->editColumn('product.price', function ($item) {
-                    return number_format($item->product->price);
+                    return number_format($item->product->price) . ' DH';
                 })
                 ->make();
         }

@@ -48,6 +48,21 @@
                     </div>
                     <div class="flex flex-wrap -mx-3 mb-6">
                         <div class="w-full px-3">
+                            <label for="category_id"
+                                class="block uppercase tracking-widest text-gray-700 text-xs font-bold mb-2">Category</label>
+                            <select name="category_id" id="category_id"
+                                class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                                <option value="">Select Category</option>
+                                @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" {{ (old('category_id') ?? $item->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap -mx-3 mb-6">
+                        <div class="w-full px-3">
                             <label for="price"
                                 class="block uppercase tracking-widest text-gray-700 text-xs font-bold mb-2">Price</label>
                             <input type="number" placeholder="Product Price" name="price" id="price"
@@ -55,6 +70,43 @@
                                 class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         </div>
                     </div>
+
+                    <div class="border-t border-gray-200 pt-6 mt-6">
+                        <h3 class="text-lg font-bold mb-4">Promotions</h3>
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full px-3">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="is_promoted" value="1" {{ (old('is_promoted') ?? $item->is_promoted) ? 'checked' : '' }} class="form-checkbox h-5 w-5 text-lux-gold">
+                                    <span class="ml-2 text-gray-700 font-bold uppercase tracking-widest text-xs">Activer la promotion</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label for="promo_price" class="block uppercase tracking-widest text-gray-700 text-xs font-bold mb-2">Prix Promotionnel</label>
+                                <input type="number" name="promo_price" id="promo_price" value="{{ old('promo_price') ?? $item->promo_price }}" placeholder="Ex: 50000"
+                                    class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            </div>
+                            <div class="w-full md:w-1/2 px-3">
+                                <label for="promo_label" class="block uppercase tracking-widest text-gray-700 text-xs font-bold mb-2">Label Promo</label>
+                                <input type="text" name="promo_label" id="promo_label" value="{{ old('promo_label') ?? $item->promo_label }}" placeholder="Ex: Offre Spéciale"
+                                    class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label for="promo_start_at" class="block uppercase tracking-widest text-gray-700 text-xs font-bold mb-2">Date de début</label>
+                                <input type="datetime-local" name="promo_start_at" id="promo_start_at" value="{{ old('promo_start_at') ?? ($item->promo_start_at ? \Carbon\Carbon::parse($item->promo_start_at)->format('Y-m-d\TH:i') : '') }}"
+                                    class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            </div>
+                            <div class="w-full md:w-1/2 px-3">
+                                <label for="promo_end_at" class="block uppercase tracking-widest text-gray-700 text-xs font-bold mb-2">Date de fin</label>
+                                <input type="datetime-local" name="promo_end_at" id="promo_end_at" value="{{ old('promo_end_at') ?? ($item->promo_end_at ? \Carbon\Carbon::parse($item->promo_end_at)->format('Y-m-d\TH:i') : '') }}"
+                                    class="block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex flex-wrap -mx-3 mb-6">
                         <div class="w-full px-3">
                             <button type="submit"

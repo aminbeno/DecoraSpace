@@ -26,6 +26,12 @@ class ProductRequest extends FormRequest
             'name' => 'required|max:255',
             'description' => 'required',
             'price' => 'required|integer',
+            'category_id' => 'required|exists:categories,id',
+            'is_promoted' => 'boolean',
+            'promo_price' => 'nullable|integer|lt:price',
+            'promo_start_at' => 'nullable|date',
+            'promo_end_at' => 'nullable|date|after:promo_start_at',
+            'promo_label' => 'nullable|string|max:50',
         ];
     }
 }

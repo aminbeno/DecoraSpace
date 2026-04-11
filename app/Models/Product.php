@@ -14,8 +14,59 @@ class Product extends Model
         'name',
         'price',
         'description',
-        'slug'
+        'slug',
+        'category_id',
+        'is_promoted',
+        'promo_price',
+        'promo_start_at',
+        'promo_end_at',
+        'promo_label'
     ];
+
+    public function isOnPromotion()
+    {
+        if (!$this->is_promoted || !$this->promo_price) {
+            return false;
+        }
+
+        $now = now();
+        $start = $this->promo_start_at;
+        $end = $this->promo_end_at;
+
+        if ($start && $now->lt($start)) {
+            return false;
+        }
+
+        if ($end && $now->gt($end)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function currentPrice()
+    {
+        return $this->isOnPromotion() ? $this->promo_price : $this->price;
+    }
+
+    public function oldPrice()
+    {
+        return $this->isOnPromotion() ? $this->price : null;
+    }
+
+    public function discountPercentage()
+    {
+        if (!$this->isOnPromotion()) {
+            return 0;
+        }
+
+        return round((($this->price - $this->promo_price) / $this->price) * 100);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
 
     public function productGallery()
     {

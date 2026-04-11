@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
@@ -16,7 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Product::query();
+            $query = Product::with('category');
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
                     return '
@@ -33,7 +34,10 @@ class ProductController extends Controller
                     ';
                 })
                 ->editColumn('price', function ($item) {
-                    return number_format($item->price);
+                    return number_format($item->price) . ' DH';
+                })
+                ->addColumn('category', function ($item) {
+                    return $item->category ? $item->category->name : 'N/A';
                 })
                 ->rawColumns(['action'])
                 ->make();
@@ -46,7 +50,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('pages.dashboard.product.create');
+        $categories = Category::all();
+        return view('pages.dashboard.product.create', compact('categories'));
     }
 
     /**
@@ -56,6 +61,7 @@ class ProductController extends Controller
     {
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+        $data['is_promoted'] = $request->has('is_promoted');
 
         Product::create($data);
 
@@ -75,8 +81,10 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
+        $categories = Category::all();
         return view('pages.dashboard.product.edit', [
-            'item' => $product
+            'item' => $product,
+            'categories' => $categories
         ]);
     }
 
@@ -87,6 +95,7 @@ class ProductController extends Controller
     {
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+        $data['is_promoted'] = $request->has('is_promoted');
 
         $product->update($data);
 
