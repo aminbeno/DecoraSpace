@@ -135,6 +135,3 @@ Run serve
 -   Register
 -   Checkout Product
 
-## Feedback
-
-If you have any feedback, please reach out to us at syeichkhalil@gmail.com
